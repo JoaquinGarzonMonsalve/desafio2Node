@@ -1,91 +1,99 @@
-const fs = require('fs/promises')
-const path = require('path')
+const fs = require('fs');
+let producto = [];
 
-console.log('dirname', __dirname)
-const rutaArchivoJson = path.join(__dirname, './archivo.json')
-console.log(rutaArchivoJson)
-
-class productos {
-    constructor(path, id, titulo, description, rutaImagen, cantidad, precio, codigo) {
+class Producto{
+    constructor(id, title, description, price, path){
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.price = price;
         this.nameFile = path;
         this.producto = [];
-        this.id;
-        this.titulo;
-        this.description;
-        this.rutaImagen;
-        this.cantidad;
-        this.precio;
-        this.codigo;
 
     }
 
-    // Metodo Save(Object)
-    async save(product) {
-        this.producto.push(this.id, this.titulo, this.description, this.rutaImagen, this.cantidad, this.precio,this.codigo)
-        return this.product;
+     // Metodo getAll()
+     async getAll() {
+
+        fs.readFile('./data.json', 'utf8', (err, producto) => {
+         if(err){console.log(err);}
+            else{
+            try{
+                const data=JSON.parse(producto);
+                console.log(data);
+                console.log("get all");
+                }
+            catch(err){console.log('error parsing');}
+            }   
+        })}
+
+        async addProduct(){
+            const nuevoProducto = [{"id":this.id,"title":this.title,"description":this.description,"price":this.price}];
+            const datastring = JSON.stringify(nuevoProducto);
+            //  const actualizando= fs.watchFile("./data.json",`${datastring}`, (error) => {
+            //      if (error) throw Error("No se pudo actualizar el archivo!");
+            // })
+            // console.log("actualizando");
+            // console.log("add product");
+            console.log(datastring);
+            return datastring;
+
+        }
+
+
+
+        async actualizarArchivo(){
+            setTimeout(()=>{
 
         
-    }
-
-    // Metodo getById(Number)
-    async getById(id) {
-
-    }
-
-    // Metodo getAll()
-    async getAll() {
-
-        if (!fs.existsSync(fileNameJSON)) {
-            console.error("Archivo no existe favor ejecutar comando: npm init -y ");
-            throw Error("El archivo no se puede leer porque no existe: " + fileNameJSON);
+            },2000)
+            
+            
         }
-        let jsonString = await fs.promises.readFile(fileNameJSON, "utf-8");
-        console.info("Archivo JSON obtenido desde archivo: ");
-        console.log(jsonString);
-    
-        info.contenidoStr = jsonString;
-        info.contenidoObj = JSON.parse(jsonString);
-        console.log("Objeto info transformado desde arhivo:" + fileNameJSON);
-        // console.log(info.contenidoObj.name);
-        console.log(info);
 
-         // guardamos en formato .json
-        await fs.promises.writeFile(fileInfoJSON, JSON.stringify(info));
+        //Traemos el Producto con la ID 
+            async getProductById(id){
+        //Traemos los archivos en formato JSON para poder realizar la busqueda del ID
+        const productos = await this.obtenerJson();
 
-
-    // Lectura de resuldos
-        let resultado = await fs.promises.readFile(fileInfoJSON, "utf-8");
-        console.log("Archivo leido resultado:");
-        console.log(resultado);
-    
-
+        //Buscamos si el ID existe, si no existe enviamos NOT FOUND, si existe mostramos cual es el producto
+        const busqueda = productos.find(dato => dato.id === id);
+        if(!busqueda){
+            throw new Error('Not found')
+        }else{
+            console.log(`El producto con id ${id} es:`);
+            console.log(busqueda)
+        }
     }
 
-    // Metodo deleteById(Number)
-    async deleteById(id) {
-
-    }
-
-    async deleteAll() {
-
-    }
 }
 
-const producto1= new productos ("rutaArchivoJson","id1","producto1"," description1", "rutaImagen1", "cantidad1", "precio1", "codigo1")
-const producto2= new productos ("rutaArchivoJson","id2","producto2"," description2", "rutaImagen2", "cantidad2", "precio2", "codigo2")
-const producto3= new productos("rutaArchivoJson","id3","producto3"," description3", "rutaImagen3", "cantidad3", "precio3", "codigo3")
+console.log(` este es el producto al iniciar ${producto}`);
 
-await fs.promises.mkdir(rutaArchivoJson, { recursive: true })
-await fs.promises.writeFile(fileNamePromesa, data)
+const producto1= new Producto(1,"producto1","description1",1,"producto1");
 
-// Lectura del archivo
-let resultado = await fs.promises.readFile(fileNamePromesa, "utf-8");
-console.log("Leyendo archivo");
-console.log(resultado);
 
-const datos1=producto1.save();
-const datos2=producto2.save();
-const datos3=producto3.save();
-console.log(datos1);
-console.log(datos2);
-console.log(datos3);
+producto1.addProduct();
+
+setTimeout(()=>{
+
+    producto1.producto= producto1.getAll();
+    console.log("añadiendo a producto");
+    console.log(`mostranddo el valor de producto ${producto1.producto }`)
+},3000)
+
+setTimeout(()=>{
+
+    producto=producto.push(producto1.addProduct());
+    proString=JSON.stringify(producto);
+
+    fs.writeFile("./data.json",proString,(err)=>{
+        if(err){
+            console.log("Error writing");
+        }
+
+    })
+
+},4000)
+
+
