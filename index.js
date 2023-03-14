@@ -1,58 +1,59 @@
-const fs = require('fs');
-let producto = [];
-
-class Producto{
-    constructor(id, title, description, price, path){
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.nameFile = path;
+ const { clear } = require('console');
+const fs=require('fs')
+ const {prod1, prod2,prod3,prod4,prod5,prod6,prod7,prod8}=require('./datos.js')
+ 
+ //Class container
+class UserManager {
+    constructor(filename) {
+        this.filename = filename;
         this.producto = [];
+    }
+
+    createUSer=async(newUser)=>{
+
+        const filenameExists = fs.existsSync(this.nameFile);
+        if(!filenameExists){
+            await fs.promises.writeFile(this.filename,"[]");
+        }
+    }
+
+    //Actualizamos modificaciones
+    async actualizarArchivo(){
+        fs.promises.writeFile('./Usuarios.json', JSON.stringify(this.producto, null, 2), 'utf-8');
+    }
+
+    async getAll() {
+
+        const data = await this.obtenerJson();
+        return data
 
     }
 
-     // Metodo getAll()
-     async getAll() {
-
-        fs.readFile('./data.json', 'utf8', (err, producto) => {
-         if(err){console.log(err);}
-            else{
-            try{
-                const data=JSON.parse(producto);
-                console.log(data);
-                console.log("get all");
-                }
-            catch(err){console.log('error parsing');}
-            }   
-        })}
-
-        async addProduct(){
-            const nuevoProducto = [{"id":this.id,"title":this.title,"description":this.description,"price":this.price}];
-            const datastring = JSON.stringify(nuevoProducto);
-            //  const actualizando= fs.watchFile("./data.json",`${datastring}`, (error) => {
-            //      if (error) throw Error("No se pudo actualizar el archivo!");
-            // })
-            // console.log("actualizando");
-            // console.log("add product");
-            console.log(datastring);
-            return datastring;
-
-        }
-
-
-
-        async actualizarArchivo(){
-            setTimeout(()=>{
-
+    
+    async addProduct(dataImpor){
         
-            },2000)
-            
-            
-        }
+        
+        this.producto.push(dataImpor)
+        
+        
+        return await this.producto;
+    }
 
-        //Traemos el Producto con la ID 
-            async getProductById(id){
+    // Metodo Save(Object)
+
+    async saveProducto(){
+        
+        const productos2=JSON.stringify(this.producto)
+        console.log(productos2)
+        
+        
+        
+        
+        return await productos2;
+    }
+
+     //Traemos el Producto con la ID 
+     async getProductById(id){
         //Traemos los archivos en formato JSON para poder realizar la busqueda del ID
         const productos = await this.obtenerJson();
 
@@ -66,34 +67,44 @@ class Producto{
         }
     }
 
-}
+  
+    
 
-console.log(` este es el producto al iniciar ${producto}`);
+    // Metodo deleteById(Number)
+    async deleteById(id) {
 
-const producto1= new Producto(1,"producto1","description1",1,"producto1");
+    }
+
+    async deleteAll() {
+
+    }
+
+    main(){
+        console.log("creando archivo.jsonpor si no existe");
+        producto1.createUSer();
+        producto1.addProduct(prod1);
+        producto1.addProduct(prod2);
+        producto1.addProduct(prod3);
+        producto1.addProduct(prod4);
+        producto1.addProduct(prod5);
+        producto1.addProduct(prod6);
+        producto1.addProduct(prod7);
+        producto1.addProduct(prod8);
+        producto1.saveProducto(this.producto)
+        producto1.actualizarArchivo()
+        
+        
+    }
+} 
 
 
-producto1.addProduct();
+const FILENAME_PATH = "./Usuarios.json";
 
-setTimeout(()=>{
-
-    producto1.producto= producto1.getAll();
-    console.log("añadiendo a producto");
-    console.log(`mostranddo el valor de producto ${producto1.producto }`)
-},3000)
-
-setTimeout(()=>{
-
-    producto=producto.push(producto1.addProduct());
-    proString=JSON.stringify(producto);
-
-    fs.writeFile("./data.json",proString,(err)=>{
-        if(err){
-            console.log("Error writing");
-        }
-
-    })
-
-},4000)
+const producto1 = new UserManager(FILENAME_PATH);
 
 
+ producto1.main();
+
+// console.log(producto1.producto);
+// producto1.saveProducto(this.producto)
+// const nuevonuevo=JSON.parse(producto1.producto)
